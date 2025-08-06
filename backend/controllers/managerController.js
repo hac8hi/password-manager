@@ -21,7 +21,7 @@ async function encryption(text) {
 async function decryption(encrypted) {
 
     const decipher = crypto.createDecipheriv(
-        'aes-256-cbc',
+        process.env.ALGORITHM,
         secretKey,
         Buffer.from(iv, 'hex')
     );
@@ -38,7 +38,7 @@ const getAll = async (req, res) => {
 
         const webSites = await Manager.find({}).select('webSite').sort({ createdAt: -1 });
 
-        res.status(200).json({ webSites })
+        res.status(200).json(webSites)
     } catch (error) {
         res.status(400).json({ error: error.message })
     }
@@ -59,26 +59,26 @@ const getLogin = async (req, res) => {
         return res.status(404).json({ error: 'This login does not exist' })
     }
 
-    const identifiant = await decryption(data.identifiant)
+    const identifier = await decryption(data.identifier)
     const password = await decryption(data.password)
 
-    res.status(200).json({ webSite: data.webSite, identifiant: identifiant, password: password })
+    res.status(200).json({ webSite: data.webSite, identifier: identifier, password: password })
 }
 
 const addLogin = async (req, res) => {
 
-    const { webSite, identifiant, password } = req.body
+    const { webSite, identifier, password } = req.body
 
-    if (!webSite || !identifiant || !password) {
-        return Error('All field must be filled')
+    try {
+        const encryptIdentifier = await encryption(identifier)
+        const encryptPassword = await encryption(password)
+
+        const login = await Manager.create({ webSite, identifier: encryptIdentifier, password: encryptPassword })
+
+        res.status(200).json({ message: 'Login added successfully' })
+    } catch (error) {
+        res.status(400).json({ error: error.message })
     }
-
-    const encryptIdentifiant = await encryption(identifiant)
-    const encryptPassword = await encryption(password)
-
-    const login = await Manager.create({ webSite, identifiant: encryptIdentifiant, password: encryptPassword })
-
-    res.status(200).json({ login })
 }
 
 const deleteLogin = async (req, res) => {
@@ -102,22 +102,22 @@ const updateLogin = async (req, res) => {
 
     const { id } = req.params
 
-    const { webSite, identifiant, password } = req.body
+    const { webSite, identifier, password } = req.body
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
         res.status(404).json({ error: "There is no such login" })
     }
 
-    const encryptIdentifiant = await encryption(identifiant)
+    const encryptIdentifier = await encryption(identifier)
     const encryptPassword = await encryption(password)
 
-    const newLogin = await Manager.findOneAndUpdate({ _id: id }, { webSite, identifiant: encryptIdentifiant, password: encryptPassword.content })
+    const newLogin = await Manager.findOneAndUpdate({ _id: id }, { webSite, identifier: encryptIdentifier, password: encryptPassword.content })
 
     if (!newLogin) {
         res.status(404).json({ error: "There is no such login" })
     }
 
-    res.status(200).json({ newLogin })
+    res.status(200).json({ message: 'Login updated successfully' })
 
 }
 

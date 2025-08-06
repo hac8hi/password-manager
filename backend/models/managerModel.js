@@ -10,7 +10,7 @@ const managerSchema = new Schema({
         type: String,
         required: true
     },
-    identifiant: {
+    identifier: {
         type: String,
         required: true
     },
