@@ -4,7 +4,6 @@ const mongoose = require('mongoose')
 const crypto = require("crypto")
 
 
-
 const secretKey = Buffer.from(process.env.SECRETKEY, 'base64');
 const iv = Buffer.from(process.env.IV, 'base64');
 
@@ -62,7 +61,7 @@ const getLogin = async (req, res) => {
     const identifier = await decryption(data.identifier)
     const password = await decryption(data.password)
 
-    res.status(200).json({ webSite: data.webSite, identifier: identifier, password: password })
+    res.status(200).json({ _id: data._id, webSite: data.webSite, identifier: identifier, password: password })
 }
 
 const addLogin = async (req, res) => {
@@ -95,7 +94,7 @@ const deleteLogin = async (req, res) => {
         res.status(404).json({ error: 'This login does not exist' })
     }
 
-    res.status(200).json({ message: 'Login deleted successfully' })
+    res.status(200).json(login)
 }
 
 const updateLogin = async (req, res) => {

@@ -1,9 +1,11 @@
 import { useState } from "react"
+import { useLoginsContext } from "../hooks/useLoginsContext"
 
 export default function LoginForm() {
-    const [webSite, setWebSite] = useState<any>(null)
-    const [identifier, setIdentifier] = useState<any>(null)
-    const [password, setPassword] = useState<any>(null)
+    const { dispatch } = useLoginsContext()
+    const [webSite, setWebSite] = useState<string>("")
+    const [identifier, setIdentifier] = useState<string>("")
+    const [password, setPassword] = useState<string>("")
     const [error, setError] = useState<any>(null)
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -24,11 +26,11 @@ export default function LoginForm() {
             setError(json.error)
         }
         if (response.ok) {
-            setWebSite(null)
-            setIdentifier(null)
-            setPassword(null)
-            setError(null)
-            console.log(json)
+            setWebSite("")
+            setIdentifier("")
+            setPassword("")
+            setError("")
+            dispatch({ type: 'CREATE_LOGIN', payload: json })
         }
     }
     return (
@@ -72,6 +74,13 @@ export default function LoginForm() {
                     >
                         Add Login
                     </button>
+                    {
+                        error && (
+                            <div className="border border-red-800 bg-red-500 text-black mt-4 p-2">
+                                {error.message}
+                            </div>
+                        )
+                    }
                 </form>
             </div>
         </>
