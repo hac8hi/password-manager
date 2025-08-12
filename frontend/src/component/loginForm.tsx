@@ -26,16 +26,16 @@ export default function LoginForm() {
             setError(json.error)
         }
         if (response.ok) {
+            dispatch({ type: 'CREATE_LOGIN', payload: json })
             setWebSite("")
             setIdentifier("")
             setPassword("")
             setError("")
-            dispatch({ type: 'CREATE_LOGIN', payload: json })
         }
     }
     return (
         <>
-            <div className="md:fixed md:w-md flex flex-col top-32 right-12 items-center justify-center md:p-8 p-4">
+            <div className="md:w-lg flex flex-col md:p-8 p-4 md:mr-24">
                 <h2 className="text-xl sm:text-2xl font-bold mb-10">Add new Login</h2>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-3">
                     <div>
@@ -61,7 +61,7 @@ export default function LoginForm() {
                     <div>
                         <label className="block text-sm font-medium mb-1">Password</label>
                         <input
-                            type="text"
+                            type="password"
                             onChange={(e) => setPassword(e.target.value)}
                             value={password}
                             className="w-full px-3 py-2 bg-[#f9f8f7] border border-black/[.15] rounded-md focus:outline-none"
@@ -77,7 +77,7 @@ export default function LoginForm() {
                     {
                         error && (
                             <div className="border border-red-800 bg-red-500 text-black mt-4 p-2">
-                                {error.message}
+                                {error}
                             </div>
                         )
                     }

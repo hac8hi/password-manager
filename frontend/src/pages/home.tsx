@@ -55,15 +55,15 @@ export default function Home() {
     }, [id])
 
     return (
-        <main className="flex md:flex-row flex-col items-center min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+        <main className="flex md:flex-row flex-col items-center justify-center min-h-screen py-12 px-4 sm:px-6 lg:px-8">
             <LoginForm />
-            <div className="md:w-xl w-64 flex flex-col gap-4 md:ml-96 md:mt-0 mt-10">
+            <div className="md:w-xl w-64 flex flex-col gap-4 md:mt-0 mt-10">
                 {logins && logins.map((login) => (
-                    <button key={login._id} onClick={() => {
+                    <span key={login._id} onClick={() => {
                         setId(login._id)
                     }} className="bg-white hover:bg-[#f9f8f7] shadow-md cursor-pointer rounded-md p-4">
                         <h3 className="text-lg font-semibold">{login.webSite}</h3>
-                    </button>
+                    </span>
                 ))}
             </div>
             {login && (

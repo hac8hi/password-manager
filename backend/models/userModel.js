@@ -42,10 +42,10 @@ userSchema.statics.loginuser = async function (userNameOrEmail, password) {
     return user
 }
 
-userSchema.statics.registeruser = async function (userName, email, password) {
+userSchema.statics.registeruser = async function (userName, email, password, confirmPassword) {
 
     //validation
-    if (!userName || !email || !password) {
+    if (!userName || !email || !password || !confirmPassword) {
         throw Error('All field must be filled')
     }
 
@@ -58,6 +58,10 @@ userSchema.statics.registeruser = async function (userName, email, password) {
     const emailExists = await this.findOne({ email })
     if (emailExists) {
         throw Error('This email is already used by an account')
+    }
+
+    if (password !== confirmPassword) {
+        throw Error('Re-confirm the password because it does not match')
     }
 
     //hashing password

@@ -5,8 +5,6 @@ interface LoginsContextType {
     dispatch: Dispatch<{ type: string; payload: any }>;
 }
 
-export const LoginsContext = createContext<LoginsContextType | undefined>(undefined);
-
 export function loginsReducer(state: { logins: any; }, action: { type: any; payload: any; }) {
     switch (action.type) {
         case 'SET_LOGINS':
@@ -25,6 +23,8 @@ export function loginsReducer(state: { logins: any; }, action: { type: any; payl
             return state
     }
 }
+
+export const LoginsContext = createContext<LoginsContextType | undefined>(undefined);
 
 export function LoginsContextProvider({ children }: { children: ReactNode }) {
 
