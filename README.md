@@ -38,7 +38,7 @@ This app lets you **store, encrypt, and manage** your passwords directly on your
 ``` bash
   mongod
 ```
-- If you haven't installed it:
+- If you haven't installed it: https://www.mongodb.com/docs/manual/installation/
 
 ## Create a .env file in /backend with:
 ``` .env
