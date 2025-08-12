@@ -16,7 +16,7 @@ const userSchema = new Schema({
     password: {
         type: String,
         required: true
-    }
+    },
 })
 
 userSchema.statics.loginuser = async function (userNameOrEmail, password) {

@@ -35,7 +35,9 @@ const getAll = async (req, res) => {
 
     try {
 
-        const webSites = await Manager.find({}).select('webSite').sort({ createdAt: -1 });
+        const userId = req.user._id
+
+        const webSites = await Manager.find({ userId }).select('webSite').sort({ createdAt: -1 });
 
         res.status(200).json(webSites)
     } catch (error) {
@@ -66,13 +68,15 @@ const getLogin = async (req, res) => {
 
 const addLogin = async (req, res) => {
 
+    const userId = req.user._id
+
     const { webSite, identifier, password } = req.body
 
     try {
         const encryptIdentifier = await encryption(identifier)
         const encryptPassword = await encryption(password)
 
-        const login = await Manager.create({ webSite, identifier: encryptIdentifier, password: encryptPassword })
+        const login = await Manager.create({ webSite, identifier: encryptIdentifier, password: encryptPassword, userId })
 
         res.status(200).json({ message: 'Login added successfully' })
     } catch (error) {

@@ -7,6 +7,9 @@ const {
     updateLogin,
     getLogin
 } = require('../controllers/managerController')
+const requireAuth = require('../middleware/requireAuth')
+
+router.use(requireAuth)
 
 router.post('/', addLogin)
 

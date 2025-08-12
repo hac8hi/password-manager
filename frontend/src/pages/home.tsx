@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { useLoginsContext } from "../hooks/useLoginsContext"
 import LoginForm from "../component/loginForm"
+import { useAuthContext } from "../hooks/useAuthContext"
 
 
 export default function Home() {
@@ -9,14 +10,19 @@ export default function Home() {
     const [login, setLogin] = useState<any>(null)
 
     const { logins, dispatch } = useLoginsContext()
+    const { user } = useAuthContext()
 
 
     async function handleClick() {
 
+        if (!user) return
         if (!id) return
 
         const response = await fetch(`/api/manager/${id}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${user?.token}`
+            }
         }
         )
         const json = await response.json()
@@ -32,27 +38,40 @@ export default function Home() {
 
         async function fetchLogins() {
 
-            const response = await fetch("/api/manager")
+            const response = await fetch("/api/manager", {
+                headers: {
+                    'Authorization': `Bearer ${user?.token}`
+                }
+            })
             const json = await response.json()
 
             if (response.ok) {
                 dispatch({ type: 'SET_LOGINS', payload: json })
             }
         }
-        fetchLogins()
+
         async function fetchLogin() {
 
             if (!id) return
 
-            const response = await fetch(`/api/manager/${id}`)
+            const response = await fetch(`/api/manager/${id}`, {
+                headers: {
+                    'Authorization': `Bearer ${user?.token}`
+                }
+            })
             const json = await response.json()
 
             if (response.ok) {
                 setLogin(json)
             }
         }
-        fetchLogin()
-    }, [id])
+
+        if (user) {
+            fetchLogins()
+            fetchLogin()
+        }
+
+    }, [dispatch, id, user])
 
     return (
         <main className="flex md:flex-row flex-col items-center justify-center min-h-screen py-12 px-4 sm:px-6 lg:px-8">

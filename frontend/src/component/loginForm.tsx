@@ -1,8 +1,11 @@
 import { useState } from "react"
 import { useLoginsContext } from "../hooks/useLoginsContext"
+import { useAuthContext } from "../hooks/useAuthContext"
 
 export default function LoginForm() {
     const { dispatch } = useLoginsContext()
+    const { user } = useAuthContext()
+
     const [webSite, setWebSite] = useState<string>("")
     const [identifier, setIdentifier] = useState<string>("")
     const [password, setPassword] = useState<string>("")
@@ -11,13 +14,19 @@ export default function LoginForm() {
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault()
 
+        if (!user) {
+            setError("You must be logged in.")
+            return
+        }
+
         const login = { webSite, identifier, password }
 
         const response = await fetch('/api/manager', {
             method: 'POST',
             body: JSON.stringify(login),
             headers: {
-                'content-type': 'application/json'
+                'content-type': 'application/json',
+                'Authorization': `Bearer ${user?.token}`
             }
         })
         const json = await response.json()
